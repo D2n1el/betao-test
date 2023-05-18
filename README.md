@@ -20,7 +20,7 @@ After confirming the installations, follow these steps to get started:
     ```
 2. Navigate to the project directory:
     ```bash
-    cd betab-periodic-table
+    cd betao-test
     ```
 3. Install dependencies:
     ```bash
