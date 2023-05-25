@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import ElementCell from "./ElementCell.vue";
 import tableElements from "../data/table-data";
 
@@ -10,37 +10,53 @@ const toggleTableInversion = () => {
 };
 const searchInput = ref<string>("");
 
+const inverted = ref<Boolean>(false);
+
 const toggleHighlight = (block: string) => {
   highlightedElement.value === block
     ? (highlightedElement.value = undefined)
     : (highlightedElement.value = block);
 };
+const tableInvertion = computed(() => {
+  const updatedElements = inverted.value
+    ? tableElements.map((element) => ({
+        ...element,
+        row: 10 - element.row,
+      }))
+    : tableElements;
 
+  return updatedElements;
+});
 </script>
 
 <template>
-  <input type="text" v-model="searchInput">
-  <button class="invert-button" @click="toggleTableInversion">
-    Invert Table
+  <input type="text" v-model="searchInput" />
+  <button class="invert-css" @click="toggleTableInversion">
+    Invert Table with css
+  </button>
+  <button class="invert-js" @click="inverted = !inverted">
+    Invert table with js
   </button>
   <div class="periodic-table" :class="{ inverted: invertTable }">
     <ElementCell
       class="element-cell"
-      v-for="element in tableElements"
+      v-for="element in tableInvertion"
       :key="element.atomicNumber"
       :atomic-number="element.atomicNumber"
       :name="element.name"
       :symbol="element.symbol"
       :block="element.block"
       :is-highlighted="element.block === highlightedElement"
-      :is-match="searchInput.length ? element.name.includes(searchInput) : false"
+      :is-match="
+        searchInput.length ? element.name.includes(searchInput) : false
+      "
       @highlight="toggleHighlight(element.block)"
       :style="{ gridColumn: element.column, gridRow: element.row }"
     />
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .periodic-table {
   display: grid;
   grid-template-columns: repeat(18, 1fr);
@@ -61,10 +77,17 @@ const toggleHighlight = (block: string) => {
   transform: scaleY(-1);
 }
 
-.invert-button {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
+.invert {
+  &-css {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+  }
+  &-js {
+    position: fixed;
+    bottom: 30px;
+    right: 200px;
+  }
 }
 input {
   border: 1px solid #ccc;
