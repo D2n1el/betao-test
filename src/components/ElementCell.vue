@@ -7,6 +7,7 @@ const props = defineProps<{
   atomicNumber: Number;
   block: string;
   isHighlighted: Boolean;
+  isMatch: Boolean;
 }>();
 
 const getBackgroundColor = (block: string | undefined, highlighted = false) => {
@@ -41,7 +42,7 @@ const emit = defineEmits(["highlight"]);
     :style="{
       'background-color':
         (props.isHighlighted ? highlightedBackgroundColor : backgroundColor) ||
-        'transparent',
+        'transparent', 'border': props.isMatch ? '1px solid red' : '1px solid #ccc'
     }"
   >
     <span style="font-size: 12px">{{ props.atomicNumber }}</span>

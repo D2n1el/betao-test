@@ -8,9 +8,18 @@ const invertTable = ref<boolean>(false);
 const toggleTableInversion = () => {
   invertTable.value = !invertTable.value;
 };
+const searchInput = ref<string>("");
+
+const toggleHighlight = (block: string) => {
+  highlightedElement.value === block
+    ? (highlightedElement.value = undefined)
+    : (highlightedElement.value = block);
+};
+
 </script>
 
 <template>
+  <input type="text" v-model="searchInput">
   <button class="invert-button" @click="toggleTableInversion">
     Invert Table
   </button>
@@ -24,7 +33,8 @@ const toggleTableInversion = () => {
       :symbol="element.symbol"
       :block="element.block"
       :is-highlighted="element.block === highlightedElement"
-      @highlight="highlightedElement = element.block"
+      :is-match="searchInput.length ? element.name.includes(searchInput) : false"
+      @highlight="toggleHighlight(element.block)"
       :style="{ gridColumn: element.column, gridRow: element.row }"
     />
   </div>
@@ -55,6 +65,9 @@ const toggleTableInversion = () => {
   position: fixed;
   bottom: 30px;
   right: 30px;
+}
+input {
+  border: 1px solid #ccc;
 }
 
 @media (max-width: 1024px) {
